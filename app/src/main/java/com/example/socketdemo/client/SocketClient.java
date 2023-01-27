@@ -112,7 +112,6 @@ public class SocketClient {
                 String receiveStr = "";
                 // 在发送端不发送数据时，接收端会阻塞在read处
                 while((len = inputStream.read(buffer))!=-1){
-                    Log.d("linhao",""+len);
                     receiveStr += new String(buffer,0,len,StandardCharsets.UTF_8);
                     //当接收一次消息时，如果len恰好等于1024，当前消息不显示(bug)
                     if (len < 1024) {

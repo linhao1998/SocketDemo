@@ -1,6 +1,7 @@
 package com.example.socketdemo;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
 import android.net.wifi.WifiManager;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -19,6 +21,8 @@ import com.example.socketdemo.server.SocketServer;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ServerCallback, ClientCallback {
 
@@ -35,6 +39,10 @@ public class MainActivity extends AppCompatActivity implements ServerCallback, C
     private SocketClient socketClient = null;
 
     private StringBuilder sb;
+
+    private List<Message> messageList = new ArrayList<>();
+
+    private MsgAdapter msgAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +86,7 @@ public class MainActivity extends AppCompatActivity implements ServerCallback, C
                    socketServer.startServer(MainActivity.this);
                    openSocket = true;
                 }
-                showInfo(openSocket?"开启服务":"关闭服务");
+                showMsg(openSocket?"开启服务":"关闭服务");
                 binding.btnStartService.setText(openSocket?"关闭服务":"开启服务");
             }
         });
@@ -98,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements ServerCallback, C
                     socketClient.connectServer(ip,MainActivity.this);
                     connectSocket = true;
                 }
-                showInfo(connectSocket?"连接服务":"关闭连接");
+                showMsg(connectSocket?"连接服务":"关闭连接");
                 binding.btnConnectService.setText(connectSocket?"关闭连接":"连接服务");
             }
         });
@@ -127,8 +135,14 @@ public class MainActivity extends AppCompatActivity implements ServerCallback, C
                     socketClient.sendToServer(msg);
                 }
                 binding.etMsg.setText("");
+                updateList(isServer?1:0,msg);
             }
         });
+
+        msgAdapter = new MsgAdapter(messageList);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        binding.rvMsg.setLayoutManager(layoutManager);
+        binding.rvMsg.setAdapter(msgAdapter);
     }
 
     @SuppressWarnings("deprecation")
@@ -141,30 +155,43 @@ public class MainActivity extends AppCompatActivity implements ServerCallback, C
 
     @Override
     public void receiveServerMsg(String msg) {
-        showInfo("ServerMsg: " + msg);
+        updateList(1,msg);
     }
 
     @Override
     public void receiveClientMsg(Boolean success, String msg) {
-        showInfo("ClientMsg: " + msg);
+        updateList(0,msg);
     }
 
     @Override
     public void otherMsg(String msg) {
-        showInfo(msg);
+        Log.d("MainActivity",msg);
+//        showMsg(msg);
     }
 
-    private void showInfo(String info) {
-        sb.append(info).append("\n");
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                binding.tvInfo.setText(sb.toString());
-            }
-        });
-    }
+//    private void showInfo(String info) {
+//        sb.append(info).append("\n");
+//        runOnUiThread(new Runnable() {
+//            @Override
+//            public void run() {
+//                binding.tvInfo.setText(sb.toString());
+//            }
+//        });
+//    }
 
     private void showMsg(String msg) {
         Toast.makeText(MainActivity.this,msg,Toast.LENGTH_SHORT).show();
+    }
+
+    private void updateList(int type,String msg) {
+        messageList.add(new Message(type,msg));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                int position = messageList.size() == 0 ? 0 : messageList.size() - 1;
+                msgAdapter.notifyItemInserted(position);
+                binding.rvMsg.smoothScrollToPosition(position);
+            }
+        });
     }
 }

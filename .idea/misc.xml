@@ -3,9 +3,12 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidProjects/SocketDemo/app/src/main/res/drawable-xxhdpi/shape_right_msg_bg.xml" value="0.173" />
         <entry key="..\:/AndroidProjects/SocketDemo/app/src/main/res/drawable/ic_launcher_background.xml" value="0.141" />
         <entry key="..\:/AndroidProjects/SocketDemo/app/src/main/res/drawable/shape_et_bg.xml" value="0.141" />
-        <entry key="..\:/AndroidProjects/SocketDemo/app/src/main/res/layout/activity_main.xml" value="0.31666666666666665" />
+        <entry key="..\:/AndroidProjects/SocketDemo/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/AndroidProjects/SocketDemo/app/src/main/res/layout/item_rv_msg.xml" value="0.29257246376811596" />
+        <entry key="..\:/AndroidProjects/SocketDemo/app/src/main/res/layout/rv_msg_item.xml" value="0.27350427350427353" />
       </map>
     </option>
   </component>
